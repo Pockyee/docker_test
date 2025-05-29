@@ -1,0 +1,43 @@
+services:
+    api:
+      image: datascientest/fastapi:1.0.0
+      container_name: api
+      networks:
+        - test
+      ports:
+        - "8000:8000"
+    authentication:
+      build: ./authentication
+      container_name: authentication
+      networks:
+        - test
+      environment:
+        LOG: 1
+      volumes:
+        - ./log:/test/log
+      depends_on:
+      - api
+    authorization:
+      build: ./authorization
+      container_name: authorization
+      networks:
+        - test
+      environment:
+        LOG: 1
+      volumes:
+        - ./log:/test/log
+      depends_on:
+      - authentication
+    content:
+      build: ./content
+      container_name: content
+      networks:
+        - test
+      environment:
+        LOG: 1
+      volumes:
+        - ./log:/test/log
+      depends_on:
+      - authorization
+networks:
+  test:
